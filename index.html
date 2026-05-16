@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AI Test Commander</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial;
+      background: #0f172a;
+      color: white;
+      text-align: center;
+    }
+
+    .container {
+      margin-top: 80px;
+    }
+
+    input {
+      display: block;
+      margin: 15px auto;
+      padding: 12px;
+      width: 300px;
+      border-radius: 6px;
+      border: none;
+      font-size: 16px;
+    }
+
+    button {
+      padding: 12px 30px;
+      background: #22c55e;
+      border: none;
+      color: white;
+      font-size: 16px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .result {
+      margin-top: 40px;
+      padding: 20px;
+      background: #1e293b;
+      width: 70%;
+      margin-left: auto;
+      margin-right: auto;
+      border-radius: 10px;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>🚀 AI Test Commander</h1>
+
+    <input id="testCase" placeholder="Test Case (JSR-2)">
+    <input id="execution" placeholder="Execution (JSR-43)">
+
+    <label>
+      <input type="checkbox" id="forceFail" checked>
+      Force Failure
+    </label>
+
+    <br><br>
+
+    <button onclick="runTest()">Run Test</button>
+
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    async function runTest() {
+      const testCase = document.getElementById("testCase").value;
+      const execution = document.getElementById("execution").value;
+      const forceFail = document.getElementById("forceFail").checked;
+
+      try {
+        const response = await fetch("http://localhost:3000/command", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            testCase: testCase,
+            execution: execution,
+            forceFail: forceFail
+          })
+        });
+
+        const data = await response.json();
+
+        document.getElementById("result").innerText =
+          JSON.stringify(data, null, 2);
+
+      } catch (error) {
+        document.getElementById("result").innerText =
+          "Error: " + error.message;
+      }
+    }
+  </script>
+
+</body>
+</html>
